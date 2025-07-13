@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 const users = require('./data.json');
+const fs=require('fs');
 //----------------------------------------return all data into html form into ui---------------------------------------------->>
 app.get('/users', (req, res) => { 
     const html = `
@@ -21,6 +22,7 @@ app.get('/api/users', (req, res) => {
 
 //------------------- --------------------return users data as id into ui ------------------------------------------------->>
 app.get("/api/users/:id",(req,res)=>{
+    console.log("Your users here");
     const id=(Number)(req.params.id);
     const user=users.find((user)=>user.id===id)
     return res.json(user);
@@ -75,15 +77,57 @@ app.get('/userid/:id',(req,res)=>{
 
 //------------------------------Route grouping with with diffrent http method------------------------------>>
 
-app.
-route('/name/saini').
-    get((req,res)=>{
-        res.send("I am get method");
-    }).post((req,res)=>{
-            res.send("I am post method processing the new users");
-    }).patch((req,res)=>{
-            res.send("I am processing with updating the user");
+// app.
+// route('/users').
+//     get((req,res)=>{
+//         res.send("I am get method");
+//     }).post((req,res)=>{
+//             res.send("I am post method processing for creating a new users");
+//     }).patch((req,res)=>{
+//             res.send("I am processing with updating the user");
+// });
+
+
+//-------------------------------------Post data through postman------------------------------------>>
+
+app.use(express.urlencoded({ extended: false }));  //it is like middleware
+app.use(express.json()); // Add this if you're sending JSON via Postman or frontend
+
+app.post('/users', (req, res) => {
+    const body = req.body;
+    users.push({ ...body, id: users.length + 1 });
+
+    fs.writeFile('./data.json', JSON.stringify(users, null, 2), (err) => {
+        if (err) {
+            return res.status(500).json({ status: "Error", message: err.message });
+        }
+        return res.json({ status: "Success", id: users.length });
+    });
 });
+
+//-------------------------------------------------------middlewares----------------------------------------------->>
+
+app.use((req,res,next)=>{
+    console.log("I am first middleware");
+    req.id="I am content of first middleware";
+    fs.appendFile('log.txt',`\nDATE: ${Date.now()} Method: ${req.method} \n`,(err,data)=>{
+        if(err)console.error(err.mesage);
+        else{
+            next();
+        }
+    })
+    next();
+})
+app.use((req,res,next)=>{
+    console.log(req.id);
+    req.id="I have changed request";
+    console.log("I am second middleware",req.id);
+    next();
+})
+app.use((req,res,next)=>{
+    res.send("I am third middleware");
+    // next();
+})
 
 
 //---------------------------port number of an server----------------------------->>
