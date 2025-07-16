@@ -87,6 +87,10 @@
 // });
 
 
+
+
+
+//-----------------------------------------full code for get post put,patch and delete operation on a user from db mongodb----------------->>
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
