@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const users = require('./data.json');
 const fs=require('fs');
+const mongoose=require('mongoose');
 //----------------------------------------return all data into html form into ui---------------------------------------------->>
 app.get('/users', (req, res) => { 
     const html = `
@@ -110,7 +111,7 @@ app.post('/users', (req, res) => {
 app.use((req,res,next)=>{
     console.log("I am first middleware");
     req.id="I am content of first middleware";
-    fs.appendFile('log.txt',`\nDATE: ${Date.now()} Method: ${req.method} \n`,(err,data)=>{
+    fs.appendFile('log.txt',`\nDATE: ${Date.now()}IP:${req.ip} Method: ${req.method}`,(err,data)=>{
         if(err)console.error(err.mesage);
         else{
             next();
@@ -128,6 +129,69 @@ app.use((req,res,next)=>{
     res.send("I am third middleware");
     // next();
 })
+//--------------connect mongodb with nodejs--------------------------??//
+//database ko connect kiya or saini naam ka new database banaya
+
+mongoose.connect('mongodb://127.0.0.1:27017/saini').then(()=>(
+    console.log("MongoDb connected")
+)).catch((err)=>{
+console.log("MongoDb error",err.message);
+})
+
+//this is schema humne schema banaya 
+const userSchema=new mongoose.Schema({
+    firstName:{
+        type:String,
+        require:true,
+    },
+    lastName:{
+        type:String,
+    },
+    email:{
+        type:String,
+        require:true,
+        unique:true,
+    },
+    gender:{
+        type:String
+    },
+});
+
+// ==----------this is model banaya jo crud operation ke kaam ke liye banaya hai------------------>>
+const user=mongoose.model("user",userSchema);
+
+//post the users throw mongodb---------
+app.post("/api/users", async (req, res) => {
+  const body = req.body;
+
+  // Check if any required fields are missing
+  if (
+    !body ||
+    !body.first_name ||
+    !body.last_name ||
+    !body.email ||
+    !body.gender ||
+    !body.job_title
+  ) {
+    return res.status(400).json({ msg: "All fields are required" });
+  }
+
+  try {
+    const user = new User({
+      firstName: body.first_name,
+      lastName: body.last_name,
+      email: body.email,
+      gender: body.gender,
+    });
+
+    const savedUser = await user.save();
+    res.status(201).json(savedUser);
+  } catch (err) {
+    res.status(500).json({ msg: "Error saving user", error: err.message });
+  }
+});
+
+
 
 
 //---------------------------port number of an server----------------------------->>
