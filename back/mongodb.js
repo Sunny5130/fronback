@@ -112,6 +112,7 @@ const userSchema = new mongoose.Schema({
 // Model
 const User = mongoose.model("User", userSchema);
 
+
 ////////////////////////////////////////////////
 // POST: Create New User
 app.post("/api/users", async (req, res) => {
