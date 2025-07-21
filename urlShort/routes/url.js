@@ -1,4 +1,8 @@
-const express=require('express');
-const router=express.Router();
+const express = require('express');
+const router = express.Router();
 
-router.post('/',handelPostUrl);
+const { handelPostUrl } = require("../controllers/url");
+
+router.post('/', handelPostUrl);
+
+module.exports = router;
