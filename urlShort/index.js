@@ -37,6 +37,7 @@
 // app.listen(PORT, () => {
 //     console.log(`🚀 Server started at port: ${PORT}`);
 // });
+
 const express = require('express');
 const { connecttoMongodb } = require('./connect');
 const urlRouter = require('./routes/url');
@@ -47,7 +48,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-connecttoMongodb("mongodb://localhost:27017/Url-Short");
+connecttoMongodb("mongodb://localhost:27017/Url-Short").then(
+  console.log("Mongodb connected Succesfully")
+);
 
 app.use('/url', urlRouter);
 
@@ -80,4 +83,6 @@ app.get('/', (req, res) => {
   `);
 });
 
-app.listen(3000);
+app.listen(3000,()=>{
+  console.log("Server started at port no. 30000");
+});
