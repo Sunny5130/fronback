@@ -8,5 +8,5 @@ router.get('/login',(req,res)=>{
 });
 
 router.post('/signup',signupvalidation,signup);
- 
+
 module.exports=router;

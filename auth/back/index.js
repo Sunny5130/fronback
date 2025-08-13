@@ -17,6 +17,7 @@ app.use("/auth",Authrouter);
 
 const port=process.env.PORT || 8080; //port .env mai nhai hai toh wahe 8080 utha legi.
 
+
 app.listen(port,()=>{
     console.log(`Server is running in port no: ${port}`);
 })
