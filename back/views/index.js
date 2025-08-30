@@ -14,7 +14,7 @@ connectMongoDb("mongodb://127.0.0.1:27017/saini").then(()=>{
 });
 
 // Middleware plugin
-// app.use(logRequest("log.txt")); // Custom logging middleware
+app.use(logRequest("logs.txt")); // Custom logging middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
