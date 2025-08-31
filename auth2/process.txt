@@ -1,0 +1,9 @@
+------------------create user account
+mongoose
+schema
+model
+usercretae->password->hash
+jwt token -> cookie sent to frontend
+
+
+login->token->decrypt->email
